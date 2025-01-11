@@ -12,7 +12,6 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Main">
         <Stack.Screen name="Main" component={OpenCameraGalleryScreen} />
-        <Stack.Screen name="Second" component={OpenCameraGalleryScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
