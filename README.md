@@ -1,85 +1,204 @@
-OpenCameraGalleryScreen Structure and Component Details
+# **File Management and Upload System**
 
-The `OpenCameraGalleryScreen` component facilitates adding images and videos, managing their state, and initiating uploads.  It uses a combination of functional components, custom hooks, context, and bottom sheets to achieve a modular and maintainable structure.
+## **Overview**
 
-1.  OpenCameraGalleryScreen:
-    -   Top-level component.
-    -   Wraps everything in the `AddFilesPlaceholderContextProvider`, making the file management state accessible to all child components.
-    -   Renders the `OpenCameraGalleryScreenContent`.
+This React Native project provides a modular and scalable system for handling media file uploads, with robust support for image and video selection, resizing, and uploading. Users can select files from their gallery, capture photos or videos using the camera, and manage placeholders for their uploads. The app validates file size limits, generates thumbnails for video previews, and supports efficient uploading.
 
-2.  OpenCameraGalleryScreenContent:
-    -   Core logic and UI.
-    -   Uses the `useAddFiles` custom hook to manage file state, handle uploads, and interact with the bottom sheets.
-    -   Renders the `AddFilePlaceholders`, buttons, modals, and `InfoBox` components.
-    -   Manages the visibility of the `IOSSettingsModal` based on the `useImagePicker` hook.
-    -   Handles the upload process and displays informational messages using the `InfoBox`.
+---
 
-3.  useAddFiles Custom Hook:
-    -   Manages the state of added files (likely an array of objects representing files).
-    -   Provides functions for adding, removing, and interacting with files.
-    -   Handles the `uploadAllFiles` logic, which likely interacts with a backend API.
-    -   Manages references to the bottom sheets (`refRBSheet1` and `refRBSheet2`).
-    -   Exposes state and functions to the `OpenCameraGalleryScreenContent` component.
+## **Project Structure**
 
-4.  AddFilePlaceholders:
-    -   Displays placeholder UI for adding files.  This might involve showing previews of selected images and videos.
-    -   Interacts with the `useAddFiles` hook (via context) to update the file list when a user adds a new file.
-    -   Likely triggers the `AddFileBottomSheet` when a placeholder is tapped.
+The project is well-organized and follows best practices for modularity and scalability. Here's an overview of the structure:
 
-5.  AddFileBottomSheet (refRBSheet1):
-    -   Bottom sheet triggered by the `AddFilePlaceholders`.
-    -   Provides options for adding files from different sources (e.g., camera, photo library, device storage).
-    -   Interacts with the `useAddFiles` hook (and potentially the `useImagePicker` hook) to update the file list when a file is selected.
+```
+src/
+├── components/
+│   ├── InfoBox/              # Custom feedback UI
+│   ├── Button/               # Reusable button components
+│   └── IOSSettingsModal/     # iOS-specific permissions modal
+├── contexts/
+│   └── AddFilesPlaceholderContext/  # Context for managing placeholders and file uploads
+├── hooks/
+│   ├── imagePicker/          # Custom hook for image/video selection
+│   ├── imageHandler/         # Upload and thumbnail generation hooks
+│   └── imageResize.ts        # Hook for resizing images
+├── screens/
+│   └── OpenCameraGalleryScreen/  # Main screen for managing uploads
+└── types/
+    └── MediaFile.ts          # Type definitions for media files
+```
 
-6.  FileOptionsBottomSheet (refRBSheet2):
-    -   Bottom sheet that likely appears when a user interacts with an existing file placeholder.
-    -   Offers actions related to the selected file (e.g., deleting, editing metadata).
-    -   Interacts with the `useAddFiles` hook to perform these actions.
+---
 
-7.  useImagePicker Custom Hook:
-    -   Handles interactions with the device's image picker.
-    -   Manages permissions and displays the `IOSSettingsModal` if necessary.
-    -   Likely used by the `AddFileBottomSheet` when selecting images or videos from the device.
+## **Key Features**
 
-8.  Button (custom component):
-    -   Provides a reusable button component with consistent styling and behavior.
-    -   Used for the "Upload file" button.
+1. **File Management**:
+   - Add, replace, or remove files with placeholder-based file management.
+   - Support for both images and videos.
 
-9.  IOSSettingsModal:
-    -   Modal specific to iOS, handling permission requests for camera and photo library access.
-    -   Managed by the `useImagePicker` hook and displayed when required.
+2. **File Validation**:
+   - Validates file size (maximum 8 MB).
+   - Displays warnings for invalid or missing files.
 
-10. InfoBox:
-    -   Displays informational messages, warnings, or errors to the user.
-    -   Used to inform the user about file size limits, errors during upload, or when no files are selected.
+3. **Thumbnail Generation**:
+   - Automatically generates thumbnails for videos.
 
+4. **Efficient File Upload**:
+   - Supports multiple file uploads with error handling.
+   - Provides progress indicators for uploads.
 
-Data Flow:
+5. **Reusable Components**:
+   - `InfoBox`: Displays feedback messages (warnings, errors, etc.).
+   - `IOSSettingsModal`: Guides users to iOS settings for permissions.
+   - `Custom Buttons`: Modular buttons for consistent styling.
 
-1.  User interacts with `AddFilePlaceholders`.
-2.  `AddFileBottomSheet` appears, allowing user to select files.
-3.  `useImagePicker` (if used) manages device permissions and image selection.
-4.  `useAddFiles` hook updates the file list.
-5.  `AddFilePlaceholders` updates to display the new files.
-6.  User taps "Upload file" button.
-7.  `uploadAllFiles` function in `useAddFiles` initiates the upload process.
-8.  `InfoBox` displays messages regarding upload success, errors, or file size issues.
+---
 
-## Dependencies
+## **Code Explanation**
 
-The project relies on the following key dependencies:
+### **Custom Hooks**
 
-* **react-native-image-resizer:**  Used for resizing images before upload, optimizing for network transfer and storage.
-* **rn-fetch-blob:** Facilitates handling binary data, likely used for uploading files to a backend service.
-* **react-native-image-picker:** Provides a user interface for selecting images and videos from the device's gallery or camera.
-* **react-native-permissions:**  Manages runtime permissions for accessing the camera, photo library, and other device resources.
-* **react-native-modal:** A performant modal component for iOS and Android.  Used for displaying the `IOSSettingsModal`.
-* **react-native-raw-bottom-sheet:** A highly customizable bottom sheet component used for the `AddFileBottomSheet` and `FileOptionsBottomSheet`.
-* **react-native-vector-icons:** Provides a wide selection of customizable icons for use in the UI.
-* **lodash:** A utility library offering helpful functions for working with arrays, objects, and other data structures.
-* **@react-navigation/native:**  The core library for React Navigation, enabling navigation between screens.
-* **@react-navigation/stack:** Provides the Stack Navigator for managing a stack of screens within the app.
-* **react-native-create-thumbnail:**  Likely used to create thumbnail previews of images and videos for the `AddFilePlaceholders`.
-* **react-native-safe-area-context:**  Provides access to the device's safe area insets, ensuring UI elements are not obscured by notches or other device features.
-* **react-native-screens:**  Provides native screen primitives for improved performance and integration with React Navigation.
+#### **1. useAddFiles**
+Manages the lifecycle of files (images/videos):
+- **File Selection**: Handles adding, replacing, or removing files.
+- **Validation**: Checks file size limits.
+- **Uploading**: Provides bulk upload support with error handling.
 
+**Example Usage:**
+```javascript
+const {
+  handleSelectFileFromLibraryPress,
+  handleTakePhotoPress,
+  handleRecordVideoPress,
+  uploadAllFiles,
+} = useAddFiles();
+```
+
+#### **2. useImagePicker**
+Manages image and video selection, including permissions:
+- Supports gallery selection, camera, and video recording.
+- Handles permissions for both iOS and Android.
+
+**Example Usage:**
+```javascript
+const { showCamera, showPhotoAndVideoGalleryPicker } = useImagePicker();
+showCamera(); // Launches camera
+```
+
+#### **3. useImageResize**
+Resizes images to optimize file size before uploading.
+
+**Example Usage:**
+```javascript
+const { resizeImage } = useImageResize();
+resizeImage({ uri: 'file://path', originalRotation: 90 });
+```
+
+---
+
+### **Reusable Components**
+
+#### **InfoBox**
+Displays feedback to users, such as warnings or errors.
+
+**Example Usage:**
+```javascript
+<InfoBox
+  variant="WARNING"
+  title="File Too Large"
+  message="Please select a file smaller than 8 MB."
+  button={{ label: 'OK', onPress: () => setShowWarning(false) }}
+/>
+```
+
+#### **IOSSettingsModal**
+Guides users to iOS settings for granting permissions.
+
+**Example Usage:**
+```javascript
+<IOSSettingsModal isVisible={modalVisible} setIsVisible={setModalVisible} />
+```
+
+---
+
+### **Core Screen: OpenCameraGalleryScreen**
+
+This is the main interface for users to add and manage files. It integrates the hooks and components into a cohesive workflow.
+
+**Features**:
+- Displays placeholders for files.
+- Allows file selection, replacement, or removal.
+- Handles uploading all selected files.
+
+---
+
+## **Benefits of Context API and Custom Hooks**
+
+### **Why Context API?**
+- **Shared State Management**: Easily shares state (e.g., placeholders, files) across components.
+- **Scalability**: Simplifies management as the app grows.
+- **Performance**: Prevents prop-drilling and ensures better component reusability.
+
+### **Why Custom Hooks?**
+- **Reusability**: Encapsulates logic like file uploads or image resizing.
+- **Separation of Concerns**: Keeps components clean by isolating functionality.
+- **Testability**: Hooks are easier to test independently.
+
+---
+
+## **Code Efficiency and Scalability**
+
+- **Modular Design**: Each hook and component is independent, making the codebase easier to maintain.
+- **Reusable Components**: Standardized design and behavior reduce development time.
+- **Asynchronous Handling**: Efficiently manages async operations like file validation and uploads.
+
+---
+
+## **Diagram**
+
+```plaintext
++-----------------------------------------+
+| OpenCameraGalleryScreen                |
+|                                         |
+|   +----------------------------+        |
+|   | AddFilePlaceholders        |        |
+|   +----------------------------+        |
+|                                         |
+|   +----------------------------+        |
+|   | InfoBox                    |        |
+|   +----------------------------+        |
+|                                         |
+|   +----------------------------+        |
+|   | IOSSettingsModal           |        |
+|   +----------------------------+        |
+|                                         |
+|   +----------------------------+        |
+|   | Button: "Upload Files"     |        |
+|   +----------------------------+        |
++-----------------------------------------+
+```
+
+---
+
+## **Getting Started**
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd <project-directory>
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Run the app:
+   - iOS: `npx react-native run-ios`
+   - Android: `npx react-native run-android`
+
+---
+
+## **Conclusion**
+
+This project demonstrates a modular and scalable approach to building file upload workflows in React Native. By leveraging custom hooks, reusable components, and the Context API, it achieves a balance between performance and maintainability.
