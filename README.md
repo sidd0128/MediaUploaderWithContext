@@ -179,6 +179,10 @@ This is the main interface for users to add and manage files. It integrates the 
 ```
 
 ---
+## Video Example 
+
+https://github.com/user-attachments/assets/c1a9021e-402d-478e-8a8b-be6758c610ef
+
 
 ## **Getting Started**
 
